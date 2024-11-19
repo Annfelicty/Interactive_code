@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Hug for You!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #cc0033; /* Hot color */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .question {
+            display: none;
+            margin: 20px;
+            font-size: 1.5em;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .yes-btn {
+            background-color: #ff3366;
+            color: white;
+        }
+        .yes-btn:hover {
+            background-color: #ff6699;
+        }
+        .no-btn {
+            background-color: #660000;
+            color: white;
+        }
+        #hug-message {
+            display: none;
+            font-size: 2em;
+            color: #ff6699;
+            animation: hugAnimation 1s infinite alternate;
+        }
+        #question3-gif {
+            display: none;
+            margin-top: 20px;
+            width: 200px;
+            height: auto;
+        }
+        #no-message {
+            font-size: 1.5em;
+            color: #ff6666;
+            display: none;
+        }
+        @keyframes hugAnimation {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Question 1 -->
+    <div id="question1" class="question">
+        Hi Mr. CFO, having a busy day?
+        <div class="button-container">
+            <button class="button yes-btn" onclick="handleAnswer(1, true)">Yes</button>
+            <button class="button no-btn" onclick="handleAnswer(1, false)">No</button>
+        </div>
+        <div id="no-message1" class="no-message"></div>
+    </div>
+
+    <!-- Question 2 -->
+    <div id="question2" class="question">
+        So was I, but then I got distracted and thought I should distract you too... it’s only fair, right?
+        <div class="button-container">
+            <button class="button yes-btn" onclick="handleAnswer(2, true)">Yes</button>
+            <button class="button no-btn" onclick="handleAnswer(2, false)">No</button>
+        </div>
+        <div id="no-message2" class="no-message"></div>
+    </div>
+
+    <!-- Question 3 with GIF -->
+    <div id="question3" class="question">
+        I was thinking, why don't we have a music, wine, and chat session that might maybe lead to...
+        <br>
+        <img id="question3-gif" src="YOUR-GIF-URL-HERE" alt="Romantic GIF">
+        <div class="button-container">
+            <button class="button yes-btn" onclick="handleAnswer(3, true)">Yes</button>
+            <button class="button no-btn" onclick="handleAnswer(3, false)">No</button>
+        </div>
+        <div id="no-message3" class="no-message"></div>
+    </div> 
+
+    <!-- Final Question 4 with No Button (No movement) -->
+    <div id="question4" class="question">
+        I have to go now, see you later 😚😚😚
+        <div class="button-container">
+            <button class="button yes-btn" onclick="showHug()">Yes</button>
+            <button class="button no-btn" onclick="showHug()">No</button> <!-- "No" now just triggers hug -->
+        </div>
+        <div id="no-response">Aww, don't go on it now! 😜</div>
+    </div>
+
+    <!-- Hug Message -->
+    <div id="hug-message">
+        🤗 Sending you the biggest virtual hug! 🤗
+    </div>
+
+    <script>
+        // Start by showing the first question
+        document.getElementById("question1").style.display = "block";
+
+        // Function to handle Yes and No answers for all questions
+        function handleAnswer(questionNumber, isYes) {
+            const noMessageDiv = document.getElementById("no-message" + questionNumber);
+            const questionDiv = document.getElementById("question" + questionNumber);
+            // Hide any previous "No" messages
+            noMessageDiv.style.display = "none";
+
+            if (!isYes) {
+                // Custom message for "No" answers
+                if (questionNumber === 1) {
+                    noMessageDiv.innerHTML = "Well, that's rare! 😅 Here's a button to go back to the first question.";
+                    noMessageDiv.style.display = "block";
+                    createBackButton(1, noMessageDiv);
+                } else if (questionNumber === 2) {
+                    noMessageDiv.innerHTML = "Well, you are distracting me unfortunately! 😜 Here's a button to go back.";
+                    noMessageDiv.style.display = "block";
+                    createBackButton(2, noMessageDiv);
+                } else if (questionNumber === 3) {
+                    noMessageDiv.innerHTML = "Haha, maybe later then! 🍷🎶";
+                    noMessageDiv.style.display = "block";
+                }
+            } else {
+                // Hide the "No" message when "Yes" is clicked
+                noMessageDiv.style.display = "none";
+            }
+
+            // Hide current question
+            questionDiv.style.display = "none";
+
+            // Show the next question or final message
+            if (questionNumber < 4) {
+                document.getElementById("question" + (questionNumber + 1)).style.display = "block";
+                // Show GIF in Question 3
+                if (questionNumber === 3) {
+                    document.getElementById("question3-gif").style.display = "block";
+                }
+            } else {
+                showHug();
+            }
+        }
+
+        // Create a "Back" button that returns to the previous question
+        function createBackButton(questionNumber, parentDiv) {
+            const backButton = document.createElement("button");
+            backButton.classList.add("button", "no-btn");
+            backButton.innerHTML = "Back";
+            backButton.onclick = function () {
+                document.getElementById("question" + questionNumber).style.display = "block";
+                parentDiv.style.display = "none";  // Hide the "No" response message
+            };
+            parentDiv.appendChild(backButton);
+        }
+
+        // Function to show the final hug message
+        function showHug() {
+            document.getElementById("question4").style.display = "none";
+            document.getElementById("hug-message").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
